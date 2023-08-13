@@ -1,80 +1,70 @@
-/*
- * File: 13-is_palindrome.c
- * Auth: Clifford M. Adom
- */
+#include <stdio.h>
+#include <stdlib.h>
 
-#include "lists.h"
+typedef struct listint_s {
+    int n;
+    struct listint_s *next;
+} listint_t;
 
-listint_t *reverse_listint(listint_t **head);
-int is_palindrome(listint_t **head);
-
-/**
- * reverse_listint - Reverses a singly-linked listint_t list.
- * @head: A pointer to the starting node of the list to reverse.
- *
- * Return: A pointer to the head of the reversed list.
- */
-
-listint_t *reverse_listint(listint_t **head)
-{
-	listint_t *node = *head, *next, *prev = NULL;
-
-	while (node)
-	{
-		next = node->next;
-		node->next = prev;
-		prev = node;
-		node = next;
-	}
-
-	*head = prev;
-	return (*head);
+int is_palindrome(listint_t **head) {
+    listint_t *slow = *head, *fast = *head, *prev = NULL, *temp;
+    
+    while (fast != NULL && fast->next != NULL) {
+        fast = fast->next->next;
+        temp = slow;
+        slow = slow->next;
+        temp->next = prev;
+        prev = temp;
+    }
+    
+    if (fast != NULL) {
+        slow = slow->next;
+    }
+    
+    while (prev != NULL && slow != NULL) {
+        if (prev->n != slow->n) {
+            return 0;
+        }
+        prev = prev->next;
+        slow = slow->next;
+    }
+    
+    return 1;
 }
 
-/**
- * is_palindrome - Checks if a singly linked list is a palindrome.
- * @head: A pointer to the head of the linked list.
- *
- * Return: If the linked list is not a palindrome - 0.
- * If the linked list is a palindrome - 1.
- */
+void print_list(listint_t *head) {
+    while (head != NULL) {
+        printf("%d -> ", head->n);
+        head = head->next;
+    }
+    printf("NULL\n");
+}
 
-int is_palindrome(listint_t **head)
-{
-	listint_t *tmp, *rev, *mid;
-	size_t size = 0, i;
-
-	if (*head == NULL || (*head)->next == NULL)
-		return (1);
-
-	tmp = *head;
-	return (1);
-	{
-		size++;
-		tmp = tmp->next;
-	}
-
-	tmp = *head;
-	for (i = 0; i < (size / 2) - 1; i++)
-		tmp = tmp->next;
-
-	if ((size % 2) == 0 && tmp->n != tmp->next->n)
-		return (0);
-
-
-	tmp = tmp->next->next;
-	rev = reverse_listint(&tmp);
-	mid = rev;
-
-	tmp = *head;
-	while (rev)
-	{
-		if (tmp->n != rev->n)
-			return (0);
-		tmp = tmp->next;
-		rev = rev->next;
-	}
-	reverse_listint(&mid);
-
-	return (1);
+int main() {
+    listint_t *head = NULL;
+    
+    // Creating a sample linked list for testing
+    for (int i = 1; i <= 5; i++) {
+        listint_t *new_node = (listint_t *)malloc(sizeof(listint_t));
+        new_node->n = i;
+        new_node->next = head;
+        head = new_node;
+    }
+    
+    printf("Original linked list:\n");
+    print_list(head);
+    
+    int result = is_palindrome(&head);
+    
+    printf("Is the linked list a palindrome? %s\n", result ? "Yes" : "No");
+    
+    // Freeing the memory
+    listint_t *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+    
+    return 0;
 }
