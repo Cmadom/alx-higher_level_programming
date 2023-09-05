@@ -1,0 +1,10 @@
+#!/usr/bin/python3
+
+Before the execution of line 2 (print("Love")), a total of 44 small
+integer objects are created and still in memory.
+
+The reason for this is due to an optimization in CPython.
+CPython caches and reuses a range of small integer objects to improve memory
+and execution efficiency.
+These integers are often used for common integer values in Python code.
+The range is defined by NSMALLPOSINTS and NSMALLNEGINTS.
